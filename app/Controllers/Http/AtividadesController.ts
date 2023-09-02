@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Atividade from 'App/Models/Atividade'
+import Atividade from 'App/Models/Atividade'
 
 export default class AtividadesController {
   public async index({}: HttpContextContract) {
@@ -21,10 +22,21 @@ export default class AtividadesController {
   }
 
   public async show({}: HttpContextContract) {}
-
   public async edit({}: HttpContextContract) {}
 
-  public async update({}: HttpContextContract) {}
+  public async update({request,params}: HttpContextContract) {
+    const data = request.only(["nome","descricao","data", "local", "tipo","livre" ])
+    const atividadeId = Number(params.id)
+    const Atividade = await Atividade.find(atividadeId)
 
-  public async destroy({}: HttpContextContract) {}
+    await Atividade
+  }
+
+  public async destroy({params,response}: HttpContextContract) {
+    const atividadeId = Number(params.id)
+    const Atividade = await Atividade.find(atividadeId)
+      await Atividade.delete()
+
+      return response.status(200).json({message: 'Atividade deletada com sucesso'})
+  }
 }
